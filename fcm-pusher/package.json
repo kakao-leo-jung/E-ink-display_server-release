@@ -1,0 +1,24 @@
+{
+  "name": "fcm-pusher",
+  "version": "1.0.0",
+  "description": "FCM-push Runtime module for e-ink-display project",
+  "main": "init.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dfjung4254/E-ink-Display_fcm-pusher.git"
+  },
+  "author": "Jung Keun Hwa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dfjung4254/E-ink-Display_fcm-pusher/issues"
+  },
+  "homepage": "https://github.com/dfjung4254/E-ink-Display_fcm-pusher#readme",
+  "dependencies": {
+    "firebase-admin": "^8.6.1",
+    "mongoose": "^5.7.6"
+  }
+}
