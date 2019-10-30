@@ -64,12 +64,14 @@ module.exports = async (curHours, curMinute, day) => {
 
     /* Error Catch 해야 함 - token 이 없을 수도 있음. */
     console.log('AlarmMessage : ' + JSON.stringify(messageArray));
-    var messaging = fcm_admin.messaging();
-    var response = await messaging.sendAll(messageArray)
-        .catch(err => {
-            console.log('Error sending message : ' + err);
-        });
-
-    console.log('Successfully sent message:', response);
+    if(!messageArray.length){
+        var messaging = fcm_admin.messaging();
+        var response = await messaging.sendAll(messageArray)
+            .catch(err => {
+                console.log('Error sending message : ' + err);
+            });
+    
+        console.log('Successfully sent message:', response);
+    }
 
 };
