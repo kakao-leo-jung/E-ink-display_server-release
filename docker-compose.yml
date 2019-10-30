@@ -5,7 +5,7 @@ version: "3.7"
 
 services:
   # mongo DB 컨테이너의 이름 : db
-  mongo:
+  db:
     image: mongo:4.2.1
     volumes:
       - ./docker/data:/data/db
@@ -13,7 +13,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=jkh
       - MONGO_INITDB_ROOT_PASSWORD=rmsghk3346!
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet 1
+      test: echo 'db.runCommand("ping").ok' | mongo db:27017/test --quiet 1
       interval: 3s
       timeout: 1s
       retries: 10
