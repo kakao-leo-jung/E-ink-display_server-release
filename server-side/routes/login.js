@@ -286,6 +286,7 @@ router.get('/refresh', async (req, res, next) => {
 
         /* 1. header request */
         var jwt_refresh = req.headers.jwt_refresh;
+        console.log("jwt_refresh : " + jwt_refresh);
         if (!jwt_refresh || jwt_refresh == 'undefined') {
             throw (errorSet.createError(errorSet.es.NO_JWT_REFRESH, new Error().stack));
         }
