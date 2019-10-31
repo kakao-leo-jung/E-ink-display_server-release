@@ -12,3 +12,8 @@ $ docker run -d -e "TZ=Asia/Seoul" --name fcm --add-host=db:172.17.0.1 -v /root/
 
 ```
 
+#### PAYLOAD
+ - type : 'alarm' or 'medicine'
+ - title : 제목
+ - hour : 시간
+ - minute : 분
