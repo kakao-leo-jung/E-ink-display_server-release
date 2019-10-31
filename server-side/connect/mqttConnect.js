@@ -5,7 +5,7 @@ const topic_calendar = require('../routes_mqtt/mqtt_calendar');
 const topic_todo = require('../routes_mqtt/mqtt_todo');
 
 const connectOptions = {
-    host: '127.0.0.1',
+    host: process.env.MQTT_HOST,
     port: '1883',
 }
 

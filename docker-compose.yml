@@ -9,7 +9,8 @@ services:
     container_name: eink_nginx
     image: nginx:1.17.5
     ports: 
-      - 80:80
+      - 80:80       # http
+      - 1883:1883   # mqtt
     environment: 
       - TZ=Asia/Seoul
     # Nginx config 및 로그 저장 경로
@@ -17,7 +18,9 @@ services:
       - ./conf/proxy/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./app_logs/nginx/:/var/log/nginx/
     depends_on: 
-      - api-server
+      - api-express1
+      - api-mosquitto1
+      - api-express2
 
   # mongo DB 컨테이너의 이름 : db
   db:
@@ -48,19 +51,49 @@ services:
     links:
       - db
     volumes:
-      - /root/config:/root/config
+      - ./config:/root/config
 
-  # api-server1 앱 가동 TODO: MQTT 쪽도 로드밸런싱되야함.
-  api-server:
-    container_name: eink_node
+  # api-server1 : express + mqttbroker container
+  api-express1: # express
+    container_name: eink_express1
     build:
       context: ./server-side
     environment:
       - TZ=Asia/Seoul
-      - SERVER_PORT=8081
+      - MQTT_HOST=api-mosquitto1
     depends_on:
       - db
+      - api-mosquitto1
     links:
       - db
+      - api-mosquitto1
     volumes:
-      - /root/config:/root/config
+      - ./config:/root/config
+  api-mosquitto1: # mosquitto
+    container_name: eink_mosquitto1
+    image: eclipse-mosquitto:1.6.7
+    environment: 
+      - TZ=Asia/Seoul
+    
+  
+  # api-server2
+  api-express2:
+    container_name: eink_express2
+    build:
+      context: ./server-side
+    environment:
+      - TZ=Asia/Seoul
+      - MQTT_HOST=api-mosquitto2
+    depends_on:
+      - db
+      - api-mosquitto2
+    links:
+      - db
+      - api-mosquitto2
+    volumes:
+      - ./config:/root/config
+  api-mosquitto2: # mosquitto
+    container_name: eink_mosquitto2
+    image: eclipse-mosquitto:1.6.7
+    environment: 
+      - TZ=Asia/Seoul
