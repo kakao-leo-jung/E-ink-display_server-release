@@ -5,15 +5,15 @@ version: "3.7"
 
 services:
   # nginx reverse proxy 구축
-  command: mkdir logs/nginx
   nginx:
     container_name: eink_nginx
     image: nginx:1.17.5
     ports: 
       - 80:80
+    # Nginx config 및 로그 저장 경로
     volumes:
-      - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./logs/nginx/error.log:/var/log/nginx/error.log
+      - ./conf/proxy/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./app_logs/nginx/:/var/log/nginx/
     depends_on: 
       - api-server
 
@@ -21,7 +21,7 @@ services:
   db:
     container_name: eink_db
     image: mongo:4.2.1
-    # DB 이미지 호스트 볼륨 경로
+    # DB 이미지 호스트 볼륨, config 및 로그 저장 경로
     volumes:
       - ./docker/data:/data/db
     healthcheck:
