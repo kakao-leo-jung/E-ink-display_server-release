@@ -54,8 +54,8 @@ module.exports = async (curHours, curMinute, day) => {
             data: {
                 type: 'alarm',
                 title: pushObj.title,
-                hour: pushObj.hour,
-                minute: pushObj.minute
+                hour: String(pushObj.hour),
+                minute: String(pushObj.minute)
             },
             token: pushObj.token
         };

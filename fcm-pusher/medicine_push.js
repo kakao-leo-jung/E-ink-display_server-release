@@ -52,8 +52,8 @@ module.exports = async (curHours, curMinute) => {
             data: {
                 type: 'medicine',
                 title: pushObj.yakname,
-                hour: pushObj.hour,
-                minute: pushObj.minute
+                hour: String(pushObj.hour),
+                minute: String(pushObj.minute)
             },
             token: pushObj.token
         };
@@ -63,7 +63,6 @@ module.exports = async (curHours, curMinute) => {
     /* Error Catch 해야 함 - token 이 없을 수도 있음. */
     console.log('MedicineMessage : ' + JSON.stringify(messageArray));
     if(messageArray && messageArray.length){
-        console.log('???????????????????');
         var messaging = fcm_admin.messaging();
         var response = await messaging.sendAll(messageArray)
             .catch(err => {
