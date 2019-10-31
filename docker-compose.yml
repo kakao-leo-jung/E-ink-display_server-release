@@ -4,8 +4,22 @@
 version: "3.7"
 
 services:
+  # nginx reverse proxy 구축
+  nginx:
+    container_name: eink_nginx
+    image: nginx:1.17.5
+    ports: 
+      - 80:80
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf
+      # - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs/nginx/error.log:/var/log/nginx/error.log
+    depends_on: 
+      - api-server
+
   # mongo DB 컨테이너의 이름 : db
   db:
+    container_name: eink_db
     image: mongo:4.2.1
     # DB 이미지 호스트 볼륨 경로
     volumes:
@@ -17,7 +31,9 @@ services:
       retries: 10
       start_period: 40s
 
+  # fcm-push 앱 가동
   fcm:
+    container_name: eink_fcm
     build:
       # 빌드할 디렉터리 경로
       context: ./fcm-pusher
@@ -28,4 +44,19 @@ services:
     links:
       - db
     volumes:
-      - /root/fcm_config:/root/fcm_config
+      - /root/config:/root/config
+
+  # api-server1 앱 가동 TODO: MQTT 쪽도 로드밸런싱되야함.
+  api-server:
+    container_name: eink_node
+    build:
+      context: ./server-side
+    environment:
+      - TZ=Asia/Seoul
+      - SERVER_PORT=8081
+    depends_on:
+      - db
+    links:
+      - db
+    volumes:
+      - /root/config:/root/config

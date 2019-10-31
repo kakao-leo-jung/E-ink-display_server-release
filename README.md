@@ -2,6 +2,7 @@
 Docker-compose 를 통한 E-ink-display 서버 종합 배포
 
 ```
-# Option -d is detached mode
+# -d : detached mode
+# --force-recreate : recreate
 $ docker-compose up --build
 ```
