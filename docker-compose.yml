@@ -15,12 +15,14 @@ services:
       - TZ=Asia/Seoul
     # Nginx config 및 로그 저장 경로
     volumes:
-      - ./conf/proxy/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./conf/proxy/conf.d:/etc/nginx/conf.d
+      - ./conf/proxy/nginx.conf:/etc/nginx/nginx.conf
       - ./app_logs/nginx/:/var/log/nginx/
     depends_on: 
       - api-express1
       - api-mosquitto1
       - api-express2
+      - api-mosquitto2
 
   # mongo DB 컨테이너의 이름 : db
   db:
