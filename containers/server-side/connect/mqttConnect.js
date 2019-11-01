@@ -5,7 +5,7 @@ const topic_calendar = require('../routes_mqtt/mqtt_calendar');
 const topic_todo = require('../routes_mqtt/mqtt_todo');
 
 const connectOptions = {
-    host: process.env.MQTT_HOST,
+    host: 'hivemq',
     port: '1883',
 }
 
@@ -16,10 +16,10 @@ const connectOptions = {
 
 */
 const topic_subscribe_list = [
-    "/server/weather",
-    "/server/news",
-    "/server/calendar",
-    "/server/todo",
+    "$share/lb//server/weather",
+    "$share/lb//server/news",
+    "$share/lb//server/calendar",
+    "$share/lb//server/todo",
 ];
 
 /*
