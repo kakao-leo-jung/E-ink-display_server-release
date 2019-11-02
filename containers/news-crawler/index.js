@@ -15,7 +15,7 @@ dbConnect('user_auth');
 */
 
 /* 주기 설정 */
-const PERIOD_MINUTE = 1;
+const PERIOD_MINUTE = 5;
 
 const initialDate = new Date();
 var targetMinute = initialDate.getMinutes() + 1;
