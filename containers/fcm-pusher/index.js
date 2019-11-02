@@ -1,6 +1,6 @@
-var dbConnect = require('./dbConnect');
-var alarm_pusher = require('./alarm_push');
-var medicine_pusher = require('./medicine_push');
+var dbConnect = require('./connect/dbConnect');
+var alarm_pusher = require('./pusher/alarm_push');
+var medicine_pusher = require('./pusher/medicine_push');
 
 dbConnect('user_auth');
 /* TODO: Author 정근화 */

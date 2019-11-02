@@ -1,39 +1,37 @@
 var fcm_admin = require('./fcm_pusher_admin');
-var Alarm = require('./alarmModel');
-var User = require('./userModel');
+var Medicine = require('../model/medicineModel');
+var User = require('../model/userModel');
 
-module.exports = async (curHours, curMinute, day) => {
+module.exports = async (curHours, curMinute) => {
 
     /* find db and get Token list */
     var query = {
-        isAlarmOn: true,
+        selected: true,
         hour: curHours,
         minute: curMinute
     };
-    var day_selected_query = "day_selected." + day;
-    query[day_selected_query] = true;
 
-    var pushAlarmList = await Alarm.find(query)
+    var pushMedicineList = await Medicine.find(query)
         .catch(err => {
             console.log(err);
         });
 
-    console.log('pushAlarmList : ' + JSON.stringify(pushAlarmList));
+    console.log('pushMedicineList : ' + JSON.stringify(pushMedicineList));
 
     var pushInfo = new Object();
     var userIdArray = new Array();
-    for (var alarm of pushAlarmList) {
-        console.log('alarm : ' + JSON.stringify(alarm));
-        pushInfo[alarm.userId] = {
-            userId: alarm.userId,
-            title: alarm.title,
-            hour: alarm.hour,
-            minute: alarm.minute
+    for (var medicine of pushMedicineList) {
+        console.log('medicine : ' + JSON.stringify(medicine));
+        pushInfo[medicine.userId] = {
+            userId: medicine.userId,
+            yakname: medicine.yakname,
+            hour: medicine.hour,
+            minute: medicine.minute
         }
-        userIdArray.push(alarm.userId);
+        userIdArray.push(yakname.userId);
     }
 
-    console.log('pushAlarmInfo(noToken) : ' + JSON.stringify(pushInfo));
+    console.log('pushMedicineInfo(noToken) : ' + JSON.stringify(pushInfo));
 
     var pushUserList = await User.find({
         userId: userIdArray
@@ -46,14 +44,14 @@ module.exports = async (curHours, curMinute, day) => {
     }
 
     /* fcm push */
-    console.log('pushAlarmInfo : ' + JSON.stringify(pushInfo));
+    console.log('pushMedicineInfo : ' + JSON.stringify(pushInfo));
     var messageArray = new Array();
     for (var uid of userIdArray) {
         var pushObj = pushInfo[uid];
         var message = {
             data: {
-                type: 'alarm',
-                title: pushObj.title,
+                type: 'medicine',
+                title: pushObj.yakname,
                 hour: String(pushObj.hour),
                 minute: String(pushObj.minute)
             },
@@ -63,13 +61,13 @@ module.exports = async (curHours, curMinute, day) => {
     }
 
     /* Error Catch 해야 함 - token 이 없을 수도 있음. */
-    console.log('AlarmMessage : ' + JSON.stringify(messageArray));
+    console.log('MedicineMessage : ' + JSON.stringify(messageArray));
     if(messageArray && messageArray.length){
         var messaging = fcm_admin.messaging();
         var response = await messaging.sendAll(messageArray)
             .catch(err => {
                 console.log('Error sending message : ' + err);
-            });
+            })
     
         console.log('Successfully sent message:', response);
     }
