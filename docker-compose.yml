@@ -19,9 +19,11 @@ services:
       - ./conf/proxy/nginx.conf:/etc/nginx/nginx.conf
       - ./app_logs/nginx/:/var/log/nginx/
     depends_on: 
-      - hivemq
+      - mosquitto
       - api-express1
+      - api-mosquitto1
       - api-express2
+      - api-mosquitto2
 
   # mongo DB 컨테이너의 이름 : db
   db:
@@ -55,9 +57,11 @@ services:
       - ./config:/root/config
 
   # MQTT broker 서버 가동
-  hivemq: 
-    container_name: eink_hivemq
-    image: hivemq/hivemq3:3.4.1
+  mosquitto: 
+    container_name: eink_mosquitto
+    image: eclipse-mosquitto:1.6.7
+    ports: 
+      -  1884:1883
     environment: 
       - TZ=Asia/Seoul
 
@@ -68,14 +72,22 @@ services:
       context: ./containers/server-side
     environment:
       - TZ=Asia/Seoul
+      - MQTT_HOST=api-mosquitto1
     depends_on:
       - db
-      - hivemq
+      - mosquitto
+      - api-mosquitto1
     links:
       - db
-      - hivemq
+      - mosquitto
+      - api-mosquitto1
     volumes:
       - ./config:/root/config
+  api-mosquitto1: # mqtt broker
+    container_name: eink_mosquitto1
+    image: eclipse-mosquitto:1.6.7
+    environment: 
+      - TZ=Asia/Seoul
   
   # api-server2
   api-express2:
@@ -84,11 +96,19 @@ services:
       context: ./containers/server-side
     environment:
       - TZ=Asia/Seoul
+      - MQTT_HOST=api-mosquitto2
     depends_on:
       - db
-      - hivemq
+      - mosquitto
+      - api-mosquitto2
     links:
       - db
-      - hivemq
+      - mosquitto
+      - api-mosquitto2
     volumes:
       - ./config:/root/config
+  api-mosquitto2:
+    container_name: eink_mosquitto2
+    image: eclipse-mosquitto:1.6.7
+    environment: 
+      - TZ=Asia/Seoul
