@@ -2,7 +2,7 @@ var headline = require('headline-news-naver');
 var News = require('../model/newsModel');
 
 /* New 개수를 DB에 저장 할 최대치 */
-const MAX_DOCUMENTS = 10;
+const MAX_DOCUMENTS = 30;
 
 module.exports = async () => {
 
@@ -12,19 +12,27 @@ module.exports = async () => {
             throw (errorSet.createError(errorSet.es.FAILED_NEWS, err.stack));
         });
 
-    var newNewsCrawl = new News({
-        crawl_time: new Date(),
-        news_array: newsObj.news_array
-    });
-
-    var savedNews = await newNewsCrawl.save()
-        .catch(err => {
+    /* 병렬적으로 DB 중복 확인 및 추가 */
+    const requestLoopAsync = newsObj.news_array.map(async news => {
+        await News.findOneAndUpdate({
+            url: news.url
+        }, {
+            url: news.url,
+            title: news.title,
+            summary: news.summary,
+            contents: news.contents,
+            imageUrl: news.imageUrl,
+            crawl_time: new Date()
+        }, {upsert: true}).catch(err => {
             console.log(JSON.stringify(err));
         });
 
-    console.log("News crawled save success at : " + savedNews.crawl_time);
+    });
+    await Promise.all(requestLoopAsync);
+    
+    console.log("News crawled save success at : " + new Date());
 
-    /* News 의 저장은 최대 10개 까지 가능 - 초과하면 오래된 News 부터 지운다 */
+    /* News 의 저장은 최대 MAX_DOCUMENT 개 까지 가능 - 초과하면 오래된 News 부터 지운다 */
     var delDocuments = await News.find().sort({
         crawl_time: -1
     }).skip(MAX_DOCUMENTS).catch(err => {
@@ -44,9 +52,5 @@ module.exports = async () => {
     }).catch(err => {
         console.log(err);
     });
-
-
-
-
 
 }

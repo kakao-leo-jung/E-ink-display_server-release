@@ -13,5 +13,5 @@ module.exports = (dbName) => {
         /* MongoDB 와 연결됨. */
         console.log("Connected to MongoDB server : " + dbName);
     });
-    mongoose.connect('mongodb://localhost/' + dbName, { useFindAndModify: false });
+    mongoose.connect('mongodb://db/' + dbName, { useFindAndModify: false });
 }

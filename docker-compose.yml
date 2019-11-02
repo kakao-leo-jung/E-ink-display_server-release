@@ -56,6 +56,18 @@ services:
     volumes:
       - ./config:/root/config
 
+  # news-crawler 앱 가동
+  news-crawler:
+    container_name: eink_news-crawler
+    build:
+      context: ./containers/news-crawler
+    environment: 
+      - TZ=Asia/Seoul
+    depends_on: 
+      - db
+    links:
+      - db
+
   # MQTT broker 서버 가동
   mosquitto: 
     container_name: eink_mosquitto

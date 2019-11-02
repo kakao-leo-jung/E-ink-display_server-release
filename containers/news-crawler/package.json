@@ -10,7 +10,8 @@
   "author": "Jung keun hwa",
   "license": "ISC",
   "dependencies": {
-    "headline-news-naver": "^1.0.4",
-    "mongoose": "^5.7.4"
+    "headline-news-naver": "^1.0.5",
+    "mongoose": "^5.7.4",
+    "request": "^2.88.0"
   }
 }
