@@ -37,7 +37,6 @@ intervalFunc = async () => {
 
     /* catch minute changed */
     if (curMinute == targetMinute && curHours == targetHour) {
-        console.log("Minute changed! Check DB to Push! [" + dayString[day] + " / " + curHours + " / " + curMinute + "]");
 
         /* target minute change */
         targetMinute = (targetMinute + 1) % 60;

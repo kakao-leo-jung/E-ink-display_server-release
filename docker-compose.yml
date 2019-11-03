@@ -13,11 +13,10 @@ services:
       - 1883:1883   # mqtt
     environment: 
       - TZ=Asia/Seoul
-    # Nginx config 및 로그 저장 경로
+    # Nginx config 경로
     volumes:
       - ./conf/proxy/conf.d:/etc/nginx/conf.d
       - ./conf/proxy/nginx.conf:/etc/nginx/nginx.conf
-      - ./app_logs/nginx/:/var/log/nginx/
     depends_on: 
       - mosquitto
       - api-express1

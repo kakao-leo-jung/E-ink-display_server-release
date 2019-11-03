@@ -16,12 +16,9 @@ module.exports = async (curHours, curMinute) => {
             console.log(err);
         });
 
-    console.log('pushMedicineList : ' + JSON.stringify(pushMedicineList));
-
     var pushInfo = new Object();
     var userIdArray = new Array();
     for (var medicine of pushMedicineList) {
-        console.log('medicine : ' + JSON.stringify(medicine));
         pushInfo[medicine.userId] = {
             userId: medicine.userId,
             yakname: medicine.yakname,
@@ -30,8 +27,6 @@ module.exports = async (curHours, curMinute) => {
         }
         userIdArray.push(yakname.userId);
     }
-
-    console.log('pushMedicineInfo(noToken) : ' + JSON.stringify(pushInfo));
 
     var pushUserList = await User.find({
         userId: userIdArray
@@ -44,7 +39,6 @@ module.exports = async (curHours, curMinute) => {
     }
 
     /* fcm push */
-    console.log('pushMedicineInfo : ' + JSON.stringify(pushInfo));
     var messageArray = new Array();
     for (var uid of userIdArray) {
         var pushObj = pushInfo[uid];
@@ -68,8 +62,7 @@ module.exports = async (curHours, curMinute) => {
             .catch(err => {
                 console.log('Error sending message : ' + err);
             })
-    
-        console.log('Successfully sent message:', response);
+            console.log('Successfully sent message[' + new Date() + '] :' + response);
     }
 
 };

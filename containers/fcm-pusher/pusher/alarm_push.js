@@ -18,12 +18,9 @@ module.exports = async (curHours, curMinute, day) => {
             console.log(err);
         });
 
-    console.log('pushAlarmList : ' + JSON.stringify(pushAlarmList));
-
     var pushInfo = new Object();
     var userIdArray = new Array();
     for (var alarm of pushAlarmList) {
-        console.log('alarm : ' + JSON.stringify(alarm));
         pushInfo[alarm.userId] = {
             userId: alarm.userId,
             title: alarm.title,
@@ -32,8 +29,6 @@ module.exports = async (curHours, curMinute, day) => {
         }
         userIdArray.push(alarm.userId);
     }
-
-    console.log('pushAlarmInfo(noToken) : ' + JSON.stringify(pushInfo));
 
     var pushUserList = await User.find({
         userId: userIdArray
@@ -46,7 +41,6 @@ module.exports = async (curHours, curMinute, day) => {
     }
 
     /* fcm push */
-    console.log('pushAlarmInfo : ' + JSON.stringify(pushInfo));
     var messageArray = new Array();
     for (var uid of userIdArray) {
         var pushObj = pushInfo[uid];
@@ -70,8 +64,7 @@ module.exports = async (curHours, curMinute, day) => {
             .catch(err => {
                 console.log('Error sending message : ' + err);
             });
-    
-        console.log('Successfully sent message:', response);
+        console.log('Successfully sent message[' + new Date() + '] :' + response);
     }
 
 };
