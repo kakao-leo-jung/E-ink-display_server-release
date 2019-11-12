@@ -221,6 +221,7 @@ $ docker-compose ps
 |**`api-mosquitto1`**|eclipse-mosquitto:1.6.7|Express 서버1 과 연결된 수신용 mqtt broker </br> Express 서버1은 Nginx에 의해 분산 처리된 본 브로커를 구독 함으로써 하드웨어의 요청을 감지합니다.|
 |**`api-server2`**|./containers/server-side|Express 서버2, Http 요청과 mqtt 요청을 처리합니다.|
 |**`api-mosquitto2`**|eclipse-mosquitto:1.6.7|Express 서버2 과 연결된 수신용 mqtt broker </br> Express 서버2은 Nginx에 의해 분산 처리된 본 브로커를 구독 함으로써 하드웨어의 요청을 감지합니다.|
+
 `api-server` 와 `api-mosquitto` 는 한 세트로 작동하며 scalable 합니다.</br>
 `Healthcheck` 와 **backup server** 는 구현 예정입니다. 
 
