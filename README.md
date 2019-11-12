@@ -125,6 +125,7 @@ $ tree -d -L 3
 
 ```
 - **./References** : 구현 중 참고 레퍼런스를 보관합니다.
+  
 - **./conf** : Docker 에서 실행하는 컨테이너의 설정 파일 -volume 공유 형식으로 운용합니다.
   - **proxy** : Nginx의 설정 값 저장 폴더입니다.
     - **conf.d** : `express.conf`, `mqtt.conf` 파일에서 각 앱의 로드밸런서 설정 값을 정의합니다.
@@ -168,6 +169,7 @@ $ git push -u mystream master
 $ git pull origin master
 ```
 2. **Install Docker and Docker-compose**
+- Docker 와 Docker-compose 환경은 OS에 따라 다를 수 있습니다.
 ```
 // 레퍼런스 참고
 // 윈도우 설치 : https://docs.docker.com/docker-for-windows/install/
@@ -183,16 +185,56 @@ $ sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docke
 $ sudo chmod +x /usr/local/bin/docker-compose
 $ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 $ docker-compose --version // 설치확인
-
-
 ```
+3. **Copy configs in project directory**
+- config 파일은 보안상 Github에 올리지 않았습니다.
+- 본 레포지토리 디렉토리의 `config/` 폴더에 `config.js` 와 `magic_config.json` 파일을 붙여넣으세요.
 
-
-
+4. **Build and Run**
+- `docker-compose.yml` 의 내용에 따라 각 컨테이너들을 순차적으로 빌드하고 run 합니다.
 ```
-
-# -d : detached mode
-# --force-recreate : recreate
+// 빌드 후 실행, 로그를 확인하지 않고 background 에서 실행 시 -d 옵션 추가
 $ docker-compose up --build
 
+// Log 확인, 실시간 로그 흐름 확인 시 -f 옵션 추가
+$ docker-compose logs
+
+// Docker containers 확인
+$ docker-compose ps
 ```
+
+</br>
+
+### Running Containers
+- 자세한 컨테이너 정보는 `docker-compose.yml` 와 `server-map.png` 구성도를 확인하세요.
+- 현재 총 9개의 컨테이너를 사용 중.
+</br>
+
+|Container Name|Container Image|Description|
+|:------:|:------:|:------:|
+|**`nginx`**|nginx:1.17.5|웹서버 및 Reverse proxy 용도|
+|**`db`**|mongo:4.2.1|데이터베이스|
+|**`fcm`**|./container/fcm-pusher|알람 및 투약 메세지 푸시|
+|**`news-crawler`**|./containers/news-crawler|뉴스 크롤러|
+|**`mosquitto`**|eclipse-mosquitto:1.6.7|중계용 mqtt broker, port : 1884</br> 하드웨어는 1884포트로 본 브로커서버를 구독합니다.</br> 각 express 앱에서는 본 브로커서버를 발행하여 하드웨어에 메시지를 전달합니다.|
+|**`api-server1`**|./containers/server-side|Express 서버1, Http 요청과 mqtt 요청을 처리합니다.|
+|**`api-mosquitto1`**|eclipse-mosquitto:1.6.7|Express 서버1 과 연결된 수신용 mqtt broker </br> Express 서버1은 Nginx에 의해 분산 처리된 본 브로커를 구독 함으로써 하드웨어의 요청을 감지합니다.|
+|**`api-server2`**|./containers/server-side|Express 서버2, Http 요청과 mqtt 요청을 처리합니다.|
+|**`api-mosquitto2`**|eclipse-mosquitto:1.6.7|Express 서버2 과 연결된 수신용 mqtt broker </br> Express 서버2은 Nginx에 의해 분산 처리된 본 브로커를 구독 함으로써 하드웨어의 요청을 감지합니다.|
+`api-server` 와 `api-mosquitto` 는 한 세트로 작동하며 scalable 합니다.</br>
+`Healthcheck` 와 **backup server** 는 구현 예정입니다. 
+
+</br>
+
+### Developing and Testing Rest API Guide
+*작성예정목록*
+- 테스트용 웹 JsonWebToken 발급
+- `Jwt` 인증 절차
+- Log Handling 구조 및 `errorset` catch
+- apidoc 문서화
+
+### Developing Mqtt API Guide
+*작성예정목록*
+- mqtt 처리흐름 설명
+- Log Handling
+- 하드웨어-안드로이드(구글계정) 간 인증절차
