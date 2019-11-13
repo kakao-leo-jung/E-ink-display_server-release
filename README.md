@@ -124,21 +124,21 @@ $ tree -d -L 3
         └── journal
 
 ```
-- **./References** : 구현 중 참고 레퍼런스를 보관합니다.
+- [**./References**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/References) : 구현 중 참고 레퍼런스를 보관합니다.
   
-- **./conf** : Docker 에서 실행하는 컨테이너의 설정 파일 -volume 공유 형식으로 운용합니다.
-  - **proxy** : Nginx의 설정 값 저장 폴더입니다.
-    - **conf.d** : `express.conf`, `mqtt.conf` 파일에서 각 앱의 로드밸런서 설정 값을 정의합니다.
-  - **ginx.conf** : Nginx 의 메인 설정 파일입니다.
-- **./config** : 보안상 깃헙에 올려지지 않은 **`config.js`** 와 **`magic_config.json`** 파일을 보관해야 합니다. `docker-compose.yml` 을 확인해보시면 각 Nodejs 앱을 실행할 때 ./config/ 의 디렉토리 -volume을 공유합니다.
-- **./containers** : 개발한 각 Nodejs 앱을 보관하는 디렉토리입니다.
-  - **fcm-pusher** : 매 분마다 알람 푸시가 필요한 계정을 조회하고 등록된 기기로 FCM 서버에 푸시를 요청하는 앱입니다.
-  - **news-crawler** : 일정 시간마다 뉴스정보를 크롤링하고 DB에 업데이트하는 앱입니다.
-  - **server-side** : 메인 개발 앱, [server-side repository](https://github.com/dfjung4254/E-ink-Display_server-side)
+- [**./conf**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/conf) : Docker 에서 실행하는 컨테이너의 설정 파일 -volume 공유 형식으로 운용합니다.
+  - [**proxy**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/conf/proxy) : Nginx의 설정 값 저장 폴더입니다.
+    - [**conf.d**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/conf/proxy/conf.d) : [`express.conf`](https://github.com/dfjung4254/E-ink-display_server-release/blob/master/conf/proxy/conf.d/express.conf), [`mqtt.conf`](https://github.com/dfjung4254/E-ink-display_server-release/blob/master/conf/proxy/conf.d/mqtt.conf) 파일에서 각 앱의 로드밸런서 설정 값을 정의합니다.
+  - [**nginx.conf**](https://github.com/dfjung4254/E-ink-display_server-release/blob/master/conf/proxy/nginx.conf) : Nginx 의 메인 설정 파일입니다.
+- [**./config**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/config) : 보안상 깃헙에 올려지지 않은 **`config.js`** 와 **`magic_config.json`** 파일을 보관해야 합니다. [`docker-compose.yml`](https://github.com/dfjung4254/E-ink-display_server-release/blob/master/docker-compose.yml) 을 확인해보시면 각 Nodejs 앱을 실행할 때 ./config/ 의 디렉토리 -volume을 공유합니다.
+- [**./containers**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/containers) : 개발한 각 Nodejs 앱을 보관하는 디렉토리입니다.
+  - [**fcm-pusher**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/containers/fcm-pusher) : 매 분마다 알람 푸시가 필요한 계정을 조회하고 등록된 기기로 FCM 서버에 푸시를 요청하는 앱입니다.
+  - [**news-crawler**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/containers/news-crawler) : 일정 시간마다 뉴스정보를 크롤링하고 DB에 업데이트하는 앱입니다.
+  - [**server-side**](https://github.com/dfjung4254/E-ink-display_server-release/tree/master/containers/server-side) : 메인 개발 앱, [**server-side repository**](https://github.com/dfjung4254/E-ink-Display_server-side)
     - Nginx를 통해 들어온 http 요청을 Express.js 프레임워크를 통해 처리합니다.
-    - `docker-compose.yml` 에서는 `api-express1` 이런 식으로 정의합니다.
-    - `사용자 인증`, `DB 조회`, `외부API(Google OAuth2)` 를 호출합니다.
-    - 각 api-express 앱은 같은 번호의 mqtt broker 컨테이너를 `subscribe` 합니다.
+    - [`docker-compose.yml`]([./docker-compose.yml](https://github.com/dfjung4254/E-ink-display_server-release/blob/master/docker-compose.yml)) 에서는 `api-express1` 이런 식으로 정의합니다.
+    - [`사용자 인증`](https://developers.google.com/identity/protocols/OAuth2), [`DB 조회`](https://mongoosejs.com/docs/), [`외부API(Google OAuth2)`](https://developers.google.com/calendar/v3/reference) 를 호출합니다.
+    - 각 api-express 앱은 같은 번호의 `mqtt broker` 컨테이너를 `subscribe` 합니다.
       - `api-express1 -- api-mosquitto1`
       - `api-express2 -- api-mosquitto2`
     - 구독한 broker 서버에서 메시지가 오면 토픽에 따라 처리하고 Proxy 역할을 하는 mosquitto 서버에 `publish` 합니다.
@@ -149,7 +149,7 @@ $ tree -d -L 3
 
 ### Install
 본 환경은 리눅스(Ubuntu 18.04) 에서 Docker 기반으로 개발하였습니다.</br>
-윈도우와는 Docker 환경이 다를 수 있으니 아래 명령어들을 기반으로 **`Docker for windows`** 를 기반으로 테스트 해보세요.
+윈도우와는 Docker 환경이 다를 수 있으니 아래 명령어들을 기반으로 [**`Docker for windows`**](https://docs.docker.com/docker-for-windows/install/) 를 기반으로 테스트 해보세요.
 </br>
 1. **Clone Repository, Commit and Push**
 - Git 관리는 메인 레포지토리를 fork 하여 개발한 후 Merge Request 해주시면 됩니다.
@@ -191,7 +191,7 @@ $ docker-compose --version // 설치확인
 - 본 레포지토리 디렉토리의 `config/` 폴더에 `config.js` 와 `magic_config.json` 파일을 붙여넣으세요.
 
 4. **Build and Run**
-- `docker-compose.yml` 의 내용에 따라 각 컨테이너들을 순차적으로 빌드하고 run 합니다.
+- [`docker-compose.yml`](https://github.com/dfjung4254/E-ink-display_server-release/blob/master/docker-compose.yml) 의 내용에 따라 각 컨테이너들을 순차적으로 빌드하고 run 합니다.
 ```
 // 빌드 후 실행, 로그를 확인하지 않고 background 에서 실행 시 -d 옵션 추가
 $ docker-compose up --build
@@ -206,7 +206,7 @@ $ docker-compose ps
 </br>
 
 ### Running Containers
-- 자세한 컨테이너 정보는 `docker-compose.yml` 와 `server-map.png` 구성도를 확인하세요.
+- 자세한 컨테이너 정보는 [`docker-compose.yml`](https://github.com/dfjung4254/E-ink-display_server-release/blob/master/docker-compose.yml) 와 [`server-map.png`](./server-map.png) 구성도를 확인하세요.
 - 현재 총 9개의 컨테이너를 사용 중.
 </br>
 
